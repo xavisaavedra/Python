@@ -5,6 +5,8 @@ Created on Tue Mar  3 21:23:04 2020
 
 @author: xavi
 
+Gradiente descendiente estocastico
+===================================
 
 Data Dictionary
 
@@ -39,6 +41,12 @@ from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
+
+# Importar keras y librerias adicionales
+
+import keras
+from keras.models import Sequential
+from keras.layers import Dense
 
 
 # Importamos el datasett de entrenamiento de Titanic train.csv
@@ -96,3 +104,32 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 sc_X = StandardScaler()
 X_train = sc_X.fit_transform(X_train)
 X_test = sc_X.transform(X_test)
+
+
+# Inicialixar la RNA  (Una capa de entrada, dos capas ocultas, y una de salida)
+classifier = Sequential()
+
+# Units = a la media de nodos de entrada (En este caso son 7) y los nodos de salida (1)
+# Total 7+1 = 8 -> Media 4
+# Input_dim son las "capas de entrada"
+
+# Definir capas de entrada y primera capa oculta  "relu" -> rectificador Lineal Unitario
+classifier.add(Dense(units=4, kernel_initializer="uniform", 
+                     activation= "relu", input_dim = 7))
+
+# segunda capa oculta -  INput_dim sobra, ya que sabe que la entrada 
+# es 4, por que viene de la capa anterior
+
+classifier.add(Dense(units=4, kernel_initializer="uniform", 
+                     activation= "relu"))
+
+# Añadir capa de salida   "sigmoid" -> Funcion Sigmoidea
+classifier.add(Dense(units=1, kernel_initializer="uniform", 
+                     activation= "sigmoid"))
+
+# Compilar la RNA
+classifier.compile(optimizer= "adam", loss= "binary_crossentropy", metrics= ["accuracy"])
+
+
+
+
